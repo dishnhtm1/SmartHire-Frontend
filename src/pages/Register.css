@@ -1,0 +1,33 @@
+/* src/pages/Register.css */
+.login-container {
+  height: 100vh;
+  position: relative;
+}
+
+.login-logo {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  height: 150px;
+  z-index: 10;
+}
+
+.login-bg {
+  height: 100vh;
+  background-image: url('/src/assets/login.jpg'); /* ✅ Make sure it's in public/images */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  padding: 2rem;
+  width: 380px;
+  background: rgba(255, 255, 255, 0);
+  border-radius: 16px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(4px);
+}

@@ -1,0 +1,126 @@
+3. AI-Enhanced Recruitment Management System (RMS)
+
+
+Project Title: SmartHire: Recruitment Platform for IT Head-Hunters
+Overview:
+Design a Recruitment Management System that automates and enhances the recruitment
+workflow for IT head-hunting firms. The platform will manage the full recruitment lifecycle
+from job order creation to candidate placement while integrating AI for resume screening and
+interview feedback.
+Key Features:
+
+ Candidate sourcing and talent pool management
+
+ Job requisition and submission tracker
+
+ Interview scheduling and feedback collection
+
+ AI-based profile matching and shortlisting
+
+ Client dashboard with status updates and analytics
+
+role connect 
+
+part1
+1. Candidate Flow
+Uploads:
+
+CV (File)
+
+LinkedIn URL
+
+These are stored and made available to Recruiters.
+
+2. Recruiter Flow
+Accesses uploaded candidate profiles.
+
+Downloads CV or uses LinkedIn URL.
+
+Uploads CV to AI Analyzer:
+
+Uses local AI (Ollama, Mistral, etc.) or backend API to generate a summary.
+
+Summary includes:
+
+Skills
+
+Experience
+
+Education
+
+Recommendations
+
+Sends AI Summary to:
+
+Client Feedback Section
+
+3. Client Flow
+Views candidate summary sent by recruiter.
+
+Leaves feedback or rating:
+
+“Good React skills”
+
+“Need stronger backend knowledge”
+
+This feedback is also shown back to Candidates.
+
++-----------------+        Upload CV/LinkedIn        +------------------+
+|    Candidate    | -------------------------------> |    Recruiter     |
+|  Upload Section |                                  |  Dashboard       |
++-----------------+                                  +--------+---------+
+                                                             |
+                                                             | AI Upload
+                                                             v
+                                                   +------------------+
+                                                   | AI Analysis Tool |
+                                                   |  (Mistral etc.)  |
+                                                   +--------+---------+
+                                                             |
+                                                 Send Summary |
+                                                             v
+                                                   +------------------+
+                                                   |     Client       |
+                                                   | Feedback Section |
+                                                   +--------+---------+
+                                                             |
+                                                 Submit Feedback
+                                                             v
++-----------------+                                  +------------------+
+|    Candidate    | <------------------------------  |    Recruiter     |
+| Feedback View   |                                  | Summary Viewer   |
++-----------------+                                  +------------------+
+
+
+https://www.linkedin.com/in/r-a-d-m-perera-a78080340/
+
+ant add ok
+swagger add
+ pop up msg 
+ if client send final feed back color want to change  okafter that not yrt sende to candidateone wants another color like orange
+ client feed back response button problem (its working but cannot understand properly)
+ dummydashboard3
+
+((((((((((((((((((((((((()))))))))))))))))))))))))
+
+
+https://www.linkedin.com/in/john-doe-dev
+
+
+
+ John Doe is a passionate full-stack web developer with 3+ years of experience in React, Node.js, MongoDB, and cloud deployment (Azure). He has built several SaaS platforms, an academic portal, and a task manager app.
+
+💼 Experience:
+- Full-Stack Developer at TechNova Inc. (2021–2024)
+- Intern at CloudSolutions (2020)
+
+🛠 Skills:
+- JavaScript, TypeScript, React, Node.js, Express
+- MongoDB, PostgreSQL
+- Azure, GitHub Actions, CI/CD, Docker
+
+📢 Certifications:
+- Azure Developer Associate (AZ-204)
+- MongoDB for Developers – MongoDB University
+_))))))))))))))))))))))))))))))))))))))))))))
+http://localhost:3000/dashboard/candidate/upload?client=68371f60324a42340fe7d865

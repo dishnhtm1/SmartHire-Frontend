@@ -1,0 +1,8 @@
+/* Force visibility of AntD messages */
+.ant-message {
+  z-index: 99999 !important;
+  position: fixed !important;
+  top: 20px !important;
+  left: 50%;
+  transform: translateX(-50%);
+}

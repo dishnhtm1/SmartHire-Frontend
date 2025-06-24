@@ -1,0 +1,48 @@
+.login-bg {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+  background-size: cover;
+  background-position: center;
+}
+.login-container {
+  height: 100vh;
+  position: relative;
+}
+
+.login-logo {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  height: 60px;
+  z-index: 2;
+}
+
+.login-bg {
+  height: 100vh;
+  background-image: url('/src/assets/login.jpg'); /* Replace with your image */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.login-container {
+  height: 100vh;
+  position: relative;
+}
+
+.login-logo {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  height: 150px;
+  z-index: 2;
+}
+
+
+.login-card {
+  padding: 2rem;
+  width: 350px;
+  background: rgba(1, 0, 0, 0); /* semi-transparent white */
+  border-radius: 16px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(4px); /* subtle glass effect */
+}

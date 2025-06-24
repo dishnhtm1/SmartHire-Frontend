@@ -1,0 +1,9 @@
+/* recruiter.css */
+
+.row-confirmed {
+  background-color: #e6ffed !important; /* Light green */
+}
+
+.row-rejected {
+  background-color: #fff1f0 !important; /* Light red */
+}
