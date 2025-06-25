@@ -23,31 +23,61 @@ export default function Register() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
+  // const onFinish = async (values) => {
+  //   setLoading(true);
+  //   try {
+  //     const res = await fetch("http://localhost:5000/api/auth/register", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(values),
+  //     });
+
+  //     const data = await res.json();
+
+  //     if (!res.ok) {
+  //       message.error(data.message || "Registration failed");
+  //       return;
+  //     }
+
+  //     message.success("✅ Registration successful! Please login.");
+  //     navigate("/login");
+  //   } catch (err) {
+  //     console.error("❌ Register error:", err);
+  //     message.error("Something went wrong. Try again.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const onFinish = async (values) => {
-    setLoading(true);
-    try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
+  setLoading(true);
+  try {
+    const API_BASE_URL =
+      process.env.REACT_APP_API_URL ||
+      "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net";
 
-      const data = await res.json();
+    const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    });
 
-      if (!res.ok) {
-        message.error(data.message || "Registration failed");
-        return;
-      }
+    const data = await res.json();
 
-      message.success("✅ Registration successful! Please login.");
-      navigate("/login");
-    } catch (err) {
-      console.error("❌ Register error:", err);
-      message.error("Something went wrong. Try again.");
-    } finally {
-      setLoading(false);
+    if (!res.ok) {
+      message.error(data.message || "Registration failed");
+      return;
     }
-  };
+
+    message.success("✅ Registration successful! Please login.");
+    navigate("/login");
+  } catch (err) {
+    console.error("❌ Register error:", err);
+    message.error("Something went wrong. Try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="login-container">
