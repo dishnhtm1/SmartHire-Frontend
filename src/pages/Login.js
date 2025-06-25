@@ -20,10 +20,42 @@ export default function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
+  // const onFinish = async (values) => {
+  //   setLoading(true);
+  //   try {
+  //     const res = await fetch("http://localhost:5000/api/auth/login", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(values),
+  //     });
+
+  //     const data = await res.json();
+
+  //     if (!res.ok) {
+  //       message.error(data.message || "Login failed");
+  //       return;
+  //     }
+
+  //     localStorage.setItem("token", data.token);
+  //     localStorage.setItem("user", JSON.stringify(data.user));
+
+  //     message.success("Login successful");
+  //     navigate("/dashboard");
+  //   } catch (err) {
+  //     console.error("Login error:", err);
+  //     message.error("An error occurred during login.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const API_BASE_URL =
+        process.env.REACT_APP_API_URL ||
+        "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net";
+
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
