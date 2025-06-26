@@ -14,9 +14,13 @@ export default function ClientJobForm() {
       setLoading(true);
       const token = localStorage.getItem("token");
 
-      await axios.post("/api/client/jobs", values, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    await axios.post("/api/client/jobs", values, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
 
       message.success("✅ Job posted successfully!");
       form.resetFields();
