@@ -42,9 +42,10 @@ const AdminDashboard = () => {
       // await axios.put(`http://localhost:5000/api/admin/approve/${userId}`, {}, {
       //   headers: { Authorization: `Bearer ${token}` },
       // });
-      await axios.put(`https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/admin/approve/${userId}`, {}, {
+      const token = localStorage.getItem("token"); // ✅ Move this inside the function
+      await axios.put(`${API_BASE}/api/admin/approve/${userId}`, {}, {
         headers: { Authorization: `Bearer ${token}` },
-      });
+        });
 
       setPendingUsers(pendingUsers.filter(user => user._id !== userId));
       message.success("✅ User approved successfully");
