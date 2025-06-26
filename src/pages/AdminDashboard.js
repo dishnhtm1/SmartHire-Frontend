@@ -20,9 +20,13 @@ const AdminDashboard = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/admin/pending-users", {
+      // const res = await axios.get("http://localhost:5000/api/admin/pending-users", {
+      //   headers: { Authorization: `Bearer ${token}` },
+      // });
+      const res = await axios.get("https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/admin/pending-users", {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       setPendingUsers(res.data);
     } catch (err) {
       console.error("❌ Failed to fetch users", err);
@@ -34,10 +38,14 @@ const AdminDashboard = () => {
 
   const approveUser = async (userId) => {
     try {
-      const token = localStorage.getItem("token");
-      await axios.put(`http://localhost:5000/api/admin/approve/${userId}`, {}, {
+      // const token = localStorage.getItem("token");
+      // await axios.put(`http://localhost:5000/api/admin/approve/${userId}`, {}, {
+      //   headers: { Authorization: `Bearer ${token}` },
+      // });
+      await axios.put(`https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/admin/approve/${userId}`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       setPendingUsers(pendingUsers.filter(user => user._id !== userId));
       message.success("✅ User approved successfully");
     } catch (err) {
