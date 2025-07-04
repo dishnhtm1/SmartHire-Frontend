@@ -27,11 +27,38 @@ export default function ClientFeedback() {
   const fetchFeedbacks = async () => {
     try {
       setLoading(true);
+      // const res = await axios.get("/api/client/feedback", {
+      //   headers: { Authorization: `Bearer ${token}` },
+      // });
+      // console.log("🧪 Feedback response:", res.data);
+
+      // setFeedbacks(res.data);
+
+      // const initialInputs = {};
+      // res.data.forEach((f) => {
+      //   initialInputs[f._id] = {
+      //     finalDecision: f.finalDecision || "",
+      //     finalMessage: f.finalMessage || "",
+      //     interviewDate: f.interviewDate || "",
+      //     type: f.interviewType || "",
+      //     interviewDetails: f.interviewDetails || "",
+      //   };
+      // });
+      // setResponseInputs(initialInputs);
       const res = await axios.get("/api/client/feedback", {
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      // ✅ Defensive check
+      if (!Array.isArray(res.data)) {
+        console.error("❌ Expected array, got:", res.data);
+        message.error("Invalid response from server.");
+        return;
+      }
+
       setFeedbacks(res.data);
 
+      // Your old logic...
       const initialInputs = {};
       res.data.forEach((f) => {
         initialInputs[f._id] = {
@@ -43,6 +70,7 @@ export default function ClientFeedback() {
         };
       });
       setResponseInputs(initialInputs);
+
     } catch (error) {
       console.error("❌ Failed to fetch feedbacks:", error);
       message.error("Error fetching feedbacks");
