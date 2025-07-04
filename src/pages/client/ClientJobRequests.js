@@ -9,28 +9,58 @@ export default function ClientJobForm() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
-  const handleFinish = async (values) => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem("token");
+  // const handleFinish = async (values) => {
+  //   try {
+  //     setLoading(true);
+  //     const token = localStorage.getItem("token");
 
-    await axios.post("/api/client/jobs", values, {
+  //   await axios.post("/api/client/jobs", values, {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   });
+
+
+  //     message.success("✅ Job posted successfully!");
+  //     form.resetFields();
+  //   } catch (err) {
+  //     console.error("❌ Failed to post job:", err);
+  //     message.error("Error posting job.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  const handleFinish = async (values) => {
+  try {
+    setLoading(true);
+    const token = localStorage.getItem("token");
+
+    // 🧪 Debug logs
+    console.log("🔁 About to POST job to:", "/api/client/jobs");
+    console.log("📦 Payload:", values);
+
+    const response = await axios.post("/api/client/jobs", values, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
 
+    console.log("✅ Server responded with:", response.data);
 
-      message.success("✅ Job posted successfully!");
-      form.resetFields();
-    } catch (err) {
-      console.error("❌ Failed to post job:", err);
-      message.error("Error posting job.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    message.success("✅ Job posted successfully!");
+    form.resetFields();
+  } catch (err) {
+    console.error("❌ Failed to post job:", err);
+    console.log("🧪 Error status:", err.response?.status);
+    console.log("🧪 Error body:", err.response?.data);
+    message.error("Error posting job.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <Card title={<Title level={4}>📝 Post a New Job</Title>} style={{ maxWidth: 600, margin: "0 auto" }}>
