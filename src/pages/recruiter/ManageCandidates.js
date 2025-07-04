@@ -380,10 +380,11 @@ export default function ManageCandidates() {
         columns={columns}
         pagination={{ pageSize: 5 }}
       />
-      {Object.values(previews).length > 0 && (
+      {previews && typeof previews === "object" && Array.isArray(Object.values(previews)) && Object.values(previews).length > 0 && (
         <div style={{ marginTop: 40 }}>
           <h3>🧠 Bulk AI Feedback Previews</h3>
-          {previews && typeof previews === "object" && Object.values(previews).map((feedback) => (
+          {Object.values(previews).map((feedback) => (
+
 
             <Card
               key={feedback.candidateId}
