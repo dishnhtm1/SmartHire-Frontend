@@ -12,11 +12,20 @@ export default function MyInterviewPage() {
   useEffect(() => {
     const fetchInterviews = async () => {
       try {
+        // const res = await axios.get("/api/candidate/interviews", {
+        //   headers: { Authorization: `Bearer ${token}` },
+        // });
+        // setInterviews(res.data);
+        // console.log("✅ Interview Data:", res.data);
         const res = await axios.get("/api/candidate/interviews", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setInterviews(res.data);
-        console.log("✅ Interview Data:", res.data);
+
+        // 🧪 Deep Debugging Logs
+        console.log("📦 Response headers:", res.headers);
+        console.log("📄 Response type:", typeof res.data);
+        console.log("✅ Data preview:", res.data.slice?.(0, 2) || res.data);
+
       } catch (err) {
         console.error("❌ Failed to load interviews:", err);
       }
