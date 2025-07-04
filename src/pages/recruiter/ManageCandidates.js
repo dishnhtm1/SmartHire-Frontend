@@ -380,31 +380,32 @@ export default function ManageCandidates() {
         columns={columns}
         pagination={{ pageSize: 5 }}
       />
-      {previews && typeof previews === "object" && Array.isArray(Object.values(previews)) && Object.values(previews).length > 0 && (
+      {previews && Object.keys(previews).length > 0 && (
         <div style={{ marginTop: 40 }}>
           <h3>🧠 Bulk AI Feedback Previews</h3>
-          {Object.values(previews).map((feedback) => (
-
-
-            <Card
-              key={feedback.candidateId}
-              title={`🧾 ${feedback.candidateName} – ${feedback.jobTitle}`}
-              style={{ marginBottom: 20 }}
-              extra={
-                <Button
-                  type="primary"
-                  onClick={() => handleSubmitFeedback(feedback.candidateId)}
-                >
-                  ✅ Confirm & Send
-                </Button>
-              }
-            >
-              <Paragraph><strong>Score:</strong> {feedback.matchScore}</Paragraph>
-              <FeedbackVisualCard feedback={feedback} />
-            </Card>
-          ))}
+          {Object.values(previews)
+            .filter((feedback) => feedback && typeof feedback === "object" && !Array.isArray(feedback))
+            .map((feedback) => (
+              <Card
+                key={feedback.candidateId}
+                title={`🧾 ${feedback.candidateName} – ${feedback.jobTitle}`}
+                style={{ marginBottom: 20 }}
+                extra={
+                  <Button
+                    type="primary"
+                    onClick={() => handleSubmitFeedback(feedback.candidateId)}
+                  >
+                    ✅ Confirm & Send
+                  </Button>
+                }
+              >
+                <Paragraph><strong>Score:</strong> {feedback.matchScore}</Paragraph>
+                <FeedbackVisualCard feedback={feedback} />
+              </Card>
+            ))}
         </div>
       )}
+
 
 
       <Modal
