@@ -384,37 +384,38 @@ console.log("🔍 Object.values(previews):", Object.values(previews));
         columns={columns}
         pagination={{ pageSize: 5 }}
       />
-      {Object.values(previews || {}).length > 0 ? (
-        <div style={{ marginTop: 40 }}>
-          <h3>🧠 Bulk AI Feedback Previews</h3>
-          {Object.values(previews)
-            .filter(f => f && f.candidateId)
-            .map((feedback) => (
-              <Card
-                key={feedback.candidateId}
-                title={`🧾 ${feedback.candidateName} – ${feedback.jobTitle}`}
-                style={{ marginBottom: 20 }}
-                extra={
-                  <Button
-                    type="primary"
-                    onClick={() => handleSubmitFeedback(feedback.candidateId)}
-                  >
-                    ✅ Confirm & Send
-                  </Button>
-                }
-              >
-                <Paragraph>
-                  <strong>Score:</strong> {feedback.matchScore}
-                </Paragraph>
-                <FeedbackVisualCard feedback={feedback} />
-              </Card>
-            ))}
-        </div>
-      ) : (
-        <Paragraph type="secondary" style={{ marginTop: 40 }}>
-          No feedback previews yet.
-        </Paragraph>
-      )}
+      {Array.isArray(Object.values(previews)) && Object.values(previews).some(f => f && f.candidateId) ? (
+  <div style={{ marginTop: 40 }}>
+    <h3>🧠 Bulk AI Feedback Previews</h3>
+    {Object.values(previews)
+      .filter(f => f && f.candidateId)
+      .map((feedback) => (
+        <Card
+          key={feedback.candidateId}
+          title={`🧾 ${feedback.candidateName} – ${feedback.jobTitle}`}
+          style={{ marginBottom: 20 }}
+          extra={
+            <Button
+              type="primary"
+              onClick={() => handleSubmitFeedback(feedback.candidateId)}
+            >
+              ✅ Confirm & Send
+            </Button>
+          }
+        >
+          <Paragraph>
+            <strong>Score:</strong> {feedback.matchScore}
+          </Paragraph>
+          <FeedbackVisualCard feedback={feedback} />
+        </Card>
+      ))}
+  </div>
+) : (
+  <Paragraph type="secondary" style={{ marginTop: 40 }}>
+    No feedback previews yet.
+  </Paragraph>
+)}
+
 
 
 
