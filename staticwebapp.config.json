@@ -1,17 +1,17 @@
 {
-    "navigationFallback": {
-        "rewrite": "/index.html",
-        "exclude": [
-            "/static/*",
-            "/assets/*",
-            "/images/*",
-            "/favicon.ico"
-        ]
-    },
-    "routes": [
-        {
-            "route": "/api/*",
-            "rewrite": "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/:*"
-        }
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": [
+      "/static/*",
+      "/assets/*",
+      "/images/*",
+      "/favicon.ico"
     ]
+  },
+  "routes": [
+    {
+      "route": "/api/*",
+      "rewrite": "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/*"
+    }
+  ]
 }
