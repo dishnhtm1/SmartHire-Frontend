@@ -382,12 +382,15 @@ export default function ManageCandidates() {
       />
       {previews && Object.keys(previews).length > 0 && (
         <>
-          {console.log("🔍 Previews before rendering:", previews)}
+          {console.log("🔍 Previews:", previews)}
+          {console.log("🧪 Object.values(previews):", Object.values(previews))}
           <div style={{ marginTop: 40 }}>
             <h3>🧠 Bulk AI Feedback Previews</h3>
-            {Object.values(previews)
-              .filter((feedback) => feedback && typeof feedback === "object" && !Array.isArray(feedback))
-              .map((feedback) => (
+            {Array.isArray(Object.values(previews)) &&
+              Object.values(previews)
+                .filter((feedback) => feedback && typeof feedback === "object" && !Array.isArray(feedback))
+                .map((feedback) => (
+
                 <Card
                   key={feedback.candidateId}
                   title={`🧾 ${feedback.candidateName} – ${feedback.jobTitle}`}
