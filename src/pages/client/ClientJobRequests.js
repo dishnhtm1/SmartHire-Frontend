@@ -40,7 +40,9 @@ export default function ClientJobForm() {
     console.log("🔁 About to POST job to:", "/api/client/jobs");
     console.log("📦 Payload:", values);
 
-    const response = await axios.post("/api/client/jobs", values, {
+    // const response = await axios.post("/api/client/jobs", values, {
+    const response = await axios.post("https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/client/jobs", values, {
+
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
