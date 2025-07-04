@@ -380,44 +380,43 @@ export default function ManageCandidates() {
         columns={columns}
         pagination={{ pageSize: 5 }}
       />
-      {previews && Object.keys(previews).length > 0 && (
-        <>
-          {console.log("🔍 Previews:", previews)}
-          {console.log("🧪 Object.values(previews):", Object.values(previews))}
+      {previews &&
+          typeof previews === "object" &&
+          Object.keys(previews).length > 0 &&
+          Array.isArray(Object.values(previews)) && (
+            <div style={{ marginTop: 40 }}>
+              <h3>🧠 Bulk AI Feedback Previews</h3>
+              {Object.values(previews)
+                .filter(
+                  (feedback) =>
+                    feedback &&
+                    typeof feedback === "object" &&
+                    !Array.isArray(feedback) &&
+                    feedback.candidateId
+                )
+                .map((feedback) => (
+                  <Card
+                    key={feedback.candidateId}
+                    title={`🧾 ${feedback.candidateName} – ${feedback.jobTitle}`}
+                    style={{ marginBottom: 20 }}
+                    extra={
+                      <Button
+                        type="primary"
+                        onClick={() => handleSubmitFeedback(feedback.candidateId)}
+                      >
+                        ✅ Confirm & Send
+                      </Button>
+                    }
+                  >
+                    <Paragraph>
+                      <strong>Score:</strong> {feedback.matchScore}
+                    </Paragraph>
+                    <FeedbackVisualCard feedback={feedback} />
+                  </Card>
+                ))}
+            </div>
+        )}
 
-          <div style={{ marginTop: 40 }}>
-            <h3>🧠 Bulk AI Feedback Previews</h3>
-            {Object.values(previews)
-              .filter(
-                (feedback) =>
-                  feedback &&
-                  typeof feedback === "object" &&
-                  !Array.isArray(feedback) &&
-                  feedback.candidateId
-              )
-              .map((feedback) => (
-                <Card
-                  key={feedback.candidateId}
-                  title={`🧾 ${feedback.candidateName} – ${feedback.jobTitle}`}
-                  style={{ marginBottom: 20 }}
-                  extra={
-                    <Button
-                      type="primary"
-                      onClick={() => handleSubmitFeedback(feedback.candidateId)}
-                    >
-                      ✅ Confirm & Send
-                    </Button>
-                  }
-                >
-                  <Paragraph>
-                    <strong>Score:</strong> {feedback.matchScore}
-                  </Paragraph>
-                  <FeedbackVisualCard feedback={feedback} />
-                </Card>
-              ))}
-          </div>
-        </>
-      )}
 
 
 
