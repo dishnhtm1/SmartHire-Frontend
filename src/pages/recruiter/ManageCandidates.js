@@ -322,6 +322,10 @@ export default function ManageCandidates() {
     }
   ];
 
+  console.log("🔍 Previews:", previews);
+console.log("🔍 Object.values(previews):", Object.values(previews));
+
+
   return (
     <>
       <h2>📄 Manage Candidates</h2>
@@ -381,41 +385,35 @@ export default function ManageCandidates() {
         pagination={{ pageSize: 5 }}
       />
       {previews &&
-          typeof previews === "object" &&
-          Object.keys(previews).length > 0 &&
-          Array.isArray(Object.values(previews)) && (
-            <div style={{ marginTop: 40 }}>
-              <h3>🧠 Bulk AI Feedback Previews</h3>
-              {Object.values(previews)
-                .filter(
-                  (feedback) =>
-                    feedback &&
-                    typeof feedback === "object" &&
-                    !Array.isArray(feedback) &&
-                    feedback.candidateId
-                )
-                .map((feedback) => (
-                  <Card
-                    key={feedback.candidateId}
-                    title={`🧾 ${feedback.candidateName} – ${feedback.jobTitle}`}
-                    style={{ marginBottom: 20 }}
-                    extra={
-                      <Button
-                        type="primary"
-                        onClick={() => handleSubmitFeedback(feedback.candidateId)}
-                      >
-                        ✅ Confirm & Send
-                      </Button>
-                    }
+        typeof previews === "object" &&
+        Object.keys(previews).length > 0 &&
+        Array.isArray(Object.values(previews)) &&
+        Object.values(previews).every(item => typeof item === "object" && item.candidateId) && (
+          <div style={{ marginTop: 40 }}>
+            <h3>🧠 Bulk AI Feedback Previews</h3>
+            {Object.values(previews).map((feedback) => (
+              <Card
+                key={feedback.candidateId}
+                title={`🧾 ${feedback.candidateName} – ${feedback.jobTitle}`}
+                style={{ marginBottom: 20 }}
+                extra={
+                  <Button
+                    type="primary"
+                    onClick={() => handleSubmitFeedback(feedback.candidateId)}
                   >
-                    <Paragraph>
-                      <strong>Score:</strong> {feedback.matchScore}
-                    </Paragraph>
-                    <FeedbackVisualCard feedback={feedback} />
-                  </Card>
-                ))}
-            </div>
-        )}
+                    ✅ Confirm & Send
+                  </Button>
+                }
+              >
+                <Paragraph>
+                  <strong>Score:</strong> {feedback.matchScore}
+                </Paragraph>
+                <FeedbackVisualCard feedback={feedback} />
+              </Card>
+            ))}
+          </div>
+      )}
+
 
 
 
