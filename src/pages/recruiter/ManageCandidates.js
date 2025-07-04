@@ -55,7 +55,8 @@ export default function ManageCandidates() {
   //   setSelectedClients(preselected);
   // };
   const fetchUploads = async () => {
-    const res = await axios.get("/api/recruiter/uploads", {
+    const res = await axios.get("https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/recruiter/uploads", {
+
       headers: { Authorization: `Bearer ${token}` },
     });
 
