@@ -384,13 +384,18 @@ export default function ManageCandidates() {
         <>
           {console.log("🔍 Previews:", previews)}
           {console.log("🧪 Object.values(previews):", Object.values(previews))}
+
           <div style={{ marginTop: 40 }}>
             <h3>🧠 Bulk AI Feedback Previews</h3>
-            {Array.isArray(Object.values(previews)) &&
-              Object.values(previews)
-                .filter((feedback) => feedback && typeof feedback === "object" && !Array.isArray(feedback))
-                .map((feedback) => (
-
+            {Object.values(previews)
+              .filter(
+                (feedback) =>
+                  feedback &&
+                  typeof feedback === "object" &&
+                  !Array.isArray(feedback) &&
+                  feedback.candidateId
+              )
+              .map((feedback) => (
                 <Card
                   key={feedback.candidateId}
                   title={`🧾 ${feedback.candidateName} – ${feedback.jobTitle}`}
@@ -404,13 +409,16 @@ export default function ManageCandidates() {
                     </Button>
                   }
                 >
-                  <Paragraph><strong>Score:</strong> {feedback.matchScore}</Paragraph>
+                  <Paragraph>
+                    <strong>Score:</strong> {feedback.matchScore}
+                  </Paragraph>
                   <FeedbackVisualCard feedback={feedback} />
                 </Card>
               ))}
           </div>
         </>
       )}
+
 
 
 
