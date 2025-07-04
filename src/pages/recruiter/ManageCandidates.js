@@ -381,29 +381,32 @@ export default function ManageCandidates() {
         pagination={{ pageSize: 5 }}
       />
       {previews && Object.keys(previews).length > 0 && (
-        <div style={{ marginTop: 40 }}>
-          <h3>🧠 Bulk AI Feedback Previews</h3>
-          {Object.values(previews)
-            .filter((feedback) => feedback && typeof feedback === "object" && !Array.isArray(feedback))
-            .map((feedback) => (
-              <Card
-                key={feedback.candidateId}
-                title={`🧾 ${feedback.candidateName} – ${feedback.jobTitle}`}
-                style={{ marginBottom: 20 }}
-                extra={
-                  <Button
-                    type="primary"
-                    onClick={() => handleSubmitFeedback(feedback.candidateId)}
-                  >
-                    ✅ Confirm & Send
-                  </Button>
-                }
-              >
-                <Paragraph><strong>Score:</strong> {feedback.matchScore}</Paragraph>
-                <FeedbackVisualCard feedback={feedback} />
-              </Card>
-            ))}
-        </div>
+        <>
+          {console.log("🔍 Previews before rendering:", previews)}
+          <div style={{ marginTop: 40 }}>
+            <h3>🧠 Bulk AI Feedback Previews</h3>
+            {Object.values(previews)
+              .filter((feedback) => feedback && typeof feedback === "object" && !Array.isArray(feedback))
+              .map((feedback) => (
+                <Card
+                  key={feedback.candidateId}
+                  title={`🧾 ${feedback.candidateName} – ${feedback.jobTitle}`}
+                  style={{ marginBottom: 20 }}
+                  extra={
+                    <Button
+                      type="primary"
+                      onClick={() => handleSubmitFeedback(feedback.candidateId)}
+                    >
+                      ✅ Confirm & Send
+                    </Button>
+                  }
+                >
+                  <Paragraph><strong>Score:</strong> {feedback.matchScore}</Paragraph>
+                  <FeedbackVisualCard feedback={feedback} />
+                </Card>
+              ))}
+          </div>
+        </>
       )}
 
 
