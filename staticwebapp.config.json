@@ -11,6 +11,7 @@
   "routes": [
     {
       "route": "/api/*",
+      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       "rewrite": "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/*"
     }
   ]
