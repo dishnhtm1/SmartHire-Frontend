@@ -322,6 +322,10 @@ export default function ManageCandidates() {
     }
   ];
 
+  // ✅ ADD LOGGING HERE – RIGHT BEFORE RETURN
+  console.log("🧪 previews:", previews);
+  console.log("🧪 Object.values(previews):", Object.values(previews));
+
   return (
     <>
       <h2>📄 Manage Candidates</h2>
@@ -387,34 +391,35 @@ export default function ManageCandidates() {
           <div style={{ marginTop: 40 }}>
             <h3>🧠 Bulk AI Feedback Previews</h3>
 
-            {Object.values(previews)
-              .filter(
-                (feedback) =>
-                  feedback &&
-                  typeof feedback === "object" &&
-                  !Array.isArray(feedback) &&
-                  feedback.candidateId
-              )
-              .map((feedback) => (
-                <Card
-                  key={feedback.candidateId}
-                  title={`🧾 ${feedback.candidateName} – ${feedback.jobTitle}`}
-                  style={{ marginBottom: 20 }}
-                  extra={
-                    <Button
-                      type="primary"
-                      onClick={() => handleSubmitFeedback(feedback.candidateId)}
+            {Array.isArray(Object.values(previews)) &&
+                Object.values(previews)
+                  .filter(
+                    (feedback) =>
+                      feedback &&
+                      typeof feedback === "object" &&
+                      !Array.isArray(feedback) &&
+                      feedback.candidateId
+                  )
+                  .map((feedback) => (
+                    <Card
+                      key={feedback.candidateId}
+                      title={`🧾 ${feedback.candidateName} – ${feedback.jobTitle}`}
+                      style={{ marginBottom: 20 }}
+                      extra={
+                        <Button
+                          type="primary"
+                          onClick={() => handleSubmitFeedback(feedback.candidateId)}
+                        >
+                          ✅ Confirm & Send
+                        </Button>
+                      }
                     >
-                      ✅ Confirm & Send
-                    </Button>
-                  }
-                >
-                  <Paragraph>
-                    <strong>Score:</strong> {feedback.matchScore}
-                  </Paragraph>
-                  <FeedbackVisualCard feedback={feedback} />
-                </Card>
-              ))}
+                      <Paragraph>
+                        <strong>Score:</strong> {feedback.matchScore}
+                      </Paragraph>
+                      <FeedbackVisualCard feedback={feedback} />
+                    </Card>
+                  ))}
           </div>
       )}
 
