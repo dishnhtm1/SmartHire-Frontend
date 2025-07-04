@@ -41,11 +41,34 @@ export default function ManageCandidates() {
     setClients(res.data);
   };
 
+  // const fetchUploads = async () => {
+  //   const res = await axios.get("/api/recruiter/uploads", {
+  //     headers: { Authorization: `Bearer ${token}` },
+  //   });
+  //   setUploads(res.data);
+  //   const preselected = {};
+  //   res.data.forEach((item) => {
+  //     if (item.clientId) {
+  //       preselected[item._id] = item.clientId._id;
+  //     }
+  //   });
+  //   setSelectedClients(preselected);
+  // };
   const fetchUploads = async () => {
     const res = await axios.get("/api/recruiter/uploads", {
       headers: { Authorization: `Bearer ${token}` },
     });
+
+    console.log("📦 Uploads response:", res.data);
+
+    if (!Array.isArray(res.data)) {
+      console.error("❌ Expected array but got:", res.data);
+      message.error("Uploads fetch failed – invalid format.");
+      return;
+    }
+
     setUploads(res.data);
+
     const preselected = {};
     res.data.forEach((item) => {
       if (item.clientId) {
@@ -54,6 +77,7 @@ export default function ManageCandidates() {
     });
     setSelectedClients(preselected);
   };
+
 
   const fetchJobsForClient = async (clientId) => {
     const res = await axios.get(`/api/recruiter/client-jobs/${clientId}`, {
