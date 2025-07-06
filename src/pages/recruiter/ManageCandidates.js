@@ -35,31 +35,14 @@ export default function ManageCandidates() {
   const token = localStorage.getItem("token");
 
   const fetchClients = async () => {
-  try {
     const res = await axios.get(
-      "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/recruiter/uploads",
+      "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/users?role=client",
       {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-
-    const uploads = res.data;
-
-    // 🔁 Extract unique clients from uploads
-    const uniqueClients = {};
-    uploads.forEach((item) => {
-      const client = item.clientId;
-      if (client && client._id && !uniqueClients[client._id]) {
-        uniqueClients[client._id] = client;
-      }
-    });
-
-    setClients(Object.values(uniqueClients));
-  } catch (error) {
-    console.error("❌ Error fetching clients from uploads:", error);
-    message.error("Failed to fetch clients.");
-  }
-};
+    setClients(res.data);
+  };
 
 
   const fetchUploads = async () => {
@@ -387,7 +370,9 @@ export default function ManageCandidates() {
           }}
         >
           {clients.map((c) => (
-            <Option key={c._id} value={c._id}>{c.email}</Option>
+            <Option key={c._id} value={c._id}>
+              {c.name ? `${c.name} (${c.email})` : c.email}
+            </Option>
           ))}
         </Select>
 
