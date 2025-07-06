@@ -41,22 +41,8 @@ export default function ManageCandidates() {
     setClients(res.data);
   };
 
-  // const fetchUploads = async () => {
-  //   const res = await axios.get("/api/recruiter/uploads", {
-  //     headers: { Authorization: `Bearer ${token}` },
-  //   });
-  //   setUploads(res.data);
-  //   const preselected = {};
-  //   res.data.forEach((item) => {
-  //     if (item.clientId) {
-  //       preselected[item._id] = item.clientId._id;
-  //     }
-  //   });
-  //   setSelectedClients(preselected);
-  // };
   const fetchUploads = async () => {
     const res = await axios.get("https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/recruiter/uploads", {
-
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -78,7 +64,6 @@ export default function ManageCandidates() {
     });
     setSelectedClients(preselected);
   };
-
 
   const fetchJobsForClient = async (clientId) => {
     const res = await axios.get(`/api/recruiter/client-jobs/${clientId}`, {
@@ -140,110 +125,100 @@ export default function ManageCandidates() {
   };
 
   const handleSendAllFeedbacks = async () => {
-  if (topNResults.length === 0) {
-    return message.warning("No analyzed candidates.");
-  }
-
-  try {
-    const feedbacks = topNResults.map((item) => ({
-      candidateEmail: item.candidateEmail,
-      candidateName: item.candidateName,
-      summary: item.summary,
-      matchScore: item.matchScore,
-      skills: item.skills || {},
-      positives: item.positives || [],
-      negatives: item.negatives || [],
-      recommendations: item.recommendations || [],
-      clientId: item.clientId,
-      jobId: item.jobId,
-      jobTitle: item.jobTitle,
-    }));
-
-    await axios.post("/api/recruiter/save-bulk-feedback", { feedbacks }, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    message.success("✅ All feedbacks submitted.");
-    setTopNResults([]);   // clear analyzed feedbacks
-    setPreviews({});      // optionally clear previews too
-    fetchUploads();       // refresh table
-
-  } catch (err) {
-    console.error("❌ Bulk feedback save failed:", err);
-    message.error("❌ Failed to submit bulk feedback.");
-  }
-};
-
-  const handleBulkAnalyze = async () => {
-  if (!selectedClientForBulk || !selectedJobForBulk) {
-    return message.warning("Select both client and job for bulk analysis.");
-  }
-
-  try {
-    const res = await axios.post("/api/recruiter/analyze-top-candidates", {
-      clientId: selectedClientForBulk,
-      jobId: selectedJobForBulk,
-      topN: customTopN,
-    }, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    const bulkPreviews = {};
-    res.data.forEach((item, index) => {
-      let parsed;
-      try {
-        parsed = typeof item.summary === 'string' ? JSON.parse(item.summary) : item;
-      } catch {
-        parsed = {
-          summary: item.summary || "No summary available.",
-          matchScore: item.matchScore || 0,
-          skills: item.skills || {},
-          positives: item.positives || [],
-          negatives: item.negatives || [],
-          recommendations: item.recommendations || []
-        };
-      }
-
-      bulkPreviews[item.candidateId] = {
-        ...parsed,
-        jobId: item.jobId,
-        jobTitle: item.jobTitle,
-        candidateId: item.candidateId,
-        clientId: item.clientId,
-        candidateEmail: item.candidateEmail,
-        candidateName: item.candidateEmail?.split("@")[0] || "Candidate"
-      };
-    });
-
-    setPreviews(prev => ({
-      ...prev,
-      ...bulkPreviews
-    }));
-
-
-    setTopNResults(res.data);
-
-    // ✅ Open first candidate in modal
-    const firstCandidateId = res.data[0]?.candidateId;
-    if (firstCandidateId) {
-      setPreviewModal({
-        visible: true,
-        data: bulkPreviews[firstCandidateId],
-        allIds: res.data.map(item => item.candidateId),
-        currentIndex: 0
-      });
+    if (topNResults.length === 0) {
+      return message.warning("No analyzed candidates.");
     }
 
-    message.success("✅ Bulk analysis completed.");
-  } catch (err) {
-    console.error("❌ Bulk analysis error:", err);
-    message.error("Bulk analysis failed.");
-  }
-};
+    try {
+      const feedbacks = topNResults.map((item) => ({
+        candidateEmail: item.candidateEmail,
+        candidateName: item.candidateName,
+        summary: item.summary,
+        matchScore: item.matchScore,
+        skills: item.skills || {},
+        positives: item.positives || [],
+        negatives: item.negatives || [],
+        recommendations: item.recommendations || [],
+        clientId: item.clientId,
+        jobId: item.jobId,
+        jobTitle: item.jobTitle,
+      }));
 
+      await axios.post("/api/recruiter/save-bulk-feedback", { feedbacks }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
+      message.success("✅ All feedbacks submitted.");
+      setTopNResults([]);
+      setPreviews({});
+      fetchUploads();
 
+    } catch (err) {
+      console.error("❌ Bulk feedback save failed:", err);
+      message.error("❌ Failed to submit bulk feedback.");
+    }
+  };
 
+  const handleBulkAnalyze = async () => {
+    if (!selectedClientForBulk || !selectedJobForBulk) {
+      return message.warning("Select both client and job for bulk analysis.");
+    }
+
+    try {
+      const res = await axios.post("/api/recruiter/analyze-top-candidates", {
+        clientId: selectedClientForBulk,
+        jobId: selectedJobForBulk,
+        topN: customTopN,
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const bulkPreviews = {};
+      res.data.forEach((item) => {
+        let parsed;
+        try {
+          parsed = typeof item.summary === 'string' ? JSON.parse(item.summary) : item;
+        } catch {
+          parsed = {
+            summary: item.summary || "No summary available.",
+            matchScore: item.matchScore || 0,
+            skills: item.skills || {},
+            positives: item.positives || [],
+            negatives: item.negatives || [],
+            recommendations: item.recommendations || []
+          };
+        }
+
+        bulkPreviews[item.candidateId] = {
+          ...parsed,
+          jobId: item.jobId,
+          jobTitle: item.jobTitle,
+          candidateId: item.candidateId,
+          clientId: item.clientId,
+          candidateEmail: item.candidateEmail,
+          candidateName: item.candidateEmail?.split("@")[0] || "Candidate"
+        };
+      });
+
+      setPreviews(prev => ({ ...prev, ...bulkPreviews }));
+      setTopNResults(res.data);
+
+      const firstCandidateId = res.data[0]?.candidateId;
+      if (firstCandidateId) {
+        setPreviewModal({
+          visible: true,
+          data: bulkPreviews[firstCandidateId],
+          allIds: res.data.map(item => item.candidateId),
+          currentIndex: 0
+        });
+      }
+
+      message.success("✅ Bulk analysis completed.");
+    } catch (err) {
+      console.error("❌ Bulk analysis error:", err);
+      message.error("Bulk analysis failed.");
+    }
+  };
 
   useEffect(() => {
     fetchClients();
@@ -322,21 +297,8 @@ export default function ManageCandidates() {
     }
   ];
 
-  console.log("🔍 Previews:", previews);
-console.log("🔍 Object.values(previews):", Object.values(previews));
+  const previewValues = Object.values(previews).filter(f => f && f.candidateId);
 
-let previewValues = [];
-
-if (
-  previews &&
-  typeof previews === "object" &&
-  !Array.isArray(previews)
-) {
-  const values = Object.values(previews);
-  if (Array.isArray(values)) {
-    previewValues = values.filter((f) => f && f.candidateId);
-  }
-}
   return (
     <>
       <h2>📄 Manage Candidates</h2>
@@ -395,35 +357,36 @@ if (
         columns={columns}
         pagination={{ pageSize: 5 }}
       />
-      {Array.isArray(previewValues) && previewValues.length > 0 ? (
-  <div style={{ marginTop: 40 }}>
-    <h3>🧠 Bulk AI Feedback Previews</h3>
-    {previewValues.map((feedback) => (
-      <Card
-        key={feedback.candidateId}
-        title={`🧾 ${feedback.candidateName} – ${feedback.jobTitle}`}
-        style={{ marginBottom: 20 }}
-        extra={
-          <Button
-            type="primary"
-            onClick={() => handleSubmitFeedback(feedback.candidateId)}
-          >
-            ✅ Confirm & Send
-          </Button>
-        }
-      >
-        <Paragraph>
-          <strong>Score:</strong> {feedback.matchScore}
+
+      {previewValues.length > 0 ? (
+        <div style={{ marginTop: 40 }}>
+          <h3>🧠 Bulk AI Feedback Previews</h3>
+          {previewValues.map((feedback) => (
+            <Card
+              key={feedback.candidateId}
+              title={`🧾 ${feedback.candidateName} – ${feedback.jobTitle}`}
+              style={{ marginBottom: 20 }}
+              extra={
+                <Button
+                  type="primary"
+                  onClick={() => handleSubmitFeedback(feedback.candidateId)}
+                >
+                  ✅ Confirm & Send
+                </Button>
+              }
+            >
+              <Paragraph>
+                <strong>Score:</strong> {feedback.matchScore}
+              </Paragraph>
+              <FeedbackVisualCard feedback={feedback} />
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <Paragraph type="secondary" style={{ marginTop: 40 }}>
+          No feedback previews yet.
         </Paragraph>
-        <FeedbackVisualCard feedback={feedback} />
-      </Card>
-    ))}
-  </div>
-) : (
-  <Paragraph type="secondary" style={{ marginTop: 40 }}>
-    No feedback previews yet.
-  </Paragraph>
-)}
+      )}
 
 
 
