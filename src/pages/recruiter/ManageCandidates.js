@@ -42,20 +42,10 @@ export default function ManageCandidates() {
   };
 
   const fetchUploads = async () => {
-    const res = await axios.get("https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/recruiter/uploads", {
+    const res = await axios.get("/api/recruiter/uploads", {
       headers: { Authorization: `Bearer ${token}` },
     });
-
-    console.log("📦 Uploads response:", res.data);
-
-    if (!Array.isArray(res.data)) {
-      console.error("❌ Expected array but got:", res.data);
-      message.error("Uploads fetch failed – invalid format.");
-      return;
-    }
-
     setUploads(res.data);
-
     const preselected = {};
     res.data.forEach((item) => {
       if (item.clientId) {
@@ -125,100 +115,110 @@ export default function ManageCandidates() {
   };
 
   const handleSendAllFeedbacks = async () => {
-    if (topNResults.length === 0) {
-      return message.warning("No analyzed candidates.");
-    }
+  if (topNResults.length === 0) {
+    return message.warning("No analyzed candidates.");
+  }
 
-    try {
-      const feedbacks = topNResults.map((item) => ({
-        candidateEmail: item.candidateEmail,
-        candidateName: item.candidateName,
-        summary: item.summary,
-        matchScore: item.matchScore,
-        skills: item.skills || {},
-        positives: item.positives || [],
-        negatives: item.negatives || [],
-        recommendations: item.recommendations || [],
-        clientId: item.clientId,
-        jobId: item.jobId,
-        jobTitle: item.jobTitle,
-      }));
+  try {
+    const feedbacks = topNResults.map((item) => ({
+      candidateEmail: item.candidateEmail,
+      candidateName: item.candidateName,
+      summary: item.summary,
+      matchScore: item.matchScore,
+      skills: item.skills || {},
+      positives: item.positives || [],
+      negatives: item.negatives || [],
+      recommendations: item.recommendations || [],
+      clientId: item.clientId,
+      jobId: item.jobId,
+      jobTitle: item.jobTitle,
+    }));
 
-      await axios.post("/api/recruiter/save-bulk-feedback", { feedbacks }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    await axios.post("/api/recruiter/save-bulk-feedback", { feedbacks }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-      message.success("✅ All feedbacks submitted.");
-      setTopNResults([]);
-      setPreviews({});
-      fetchUploads();
+    message.success("✅ All feedbacks submitted.");
+    setTopNResults([]);   // clear analyzed feedbacks
+    setPreviews({});      // optionally clear previews too
+    fetchUploads();       // refresh table
 
-    } catch (err) {
-      console.error("❌ Bulk feedback save failed:", err);
-      message.error("❌ Failed to submit bulk feedback.");
-    }
-  };
+  } catch (err) {
+    console.error("❌ Bulk feedback save failed:", err);
+    message.error("❌ Failed to submit bulk feedback.");
+  }
+};
 
   const handleBulkAnalyze = async () => {
-    if (!selectedClientForBulk || !selectedJobForBulk) {
-      return message.warning("Select both client and job for bulk analysis.");
-    }
+  if (!selectedClientForBulk || !selectedJobForBulk) {
+    return message.warning("Select both client and job for bulk analysis.");
+  }
 
-    try {
-      const res = await axios.post("/api/recruiter/analyze-top-candidates", {
-        clientId: selectedClientForBulk,
-        jobId: selectedJobForBulk,
-        topN: customTopN,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+  try {
+    const res = await axios.post("/api/recruiter/analyze-top-candidates", {
+      clientId: selectedClientForBulk,
+      jobId: selectedJobForBulk,
+      topN: customTopN,
+    }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-      const bulkPreviews = {};
-      res.data.forEach((item) => {
-        let parsed;
-        try {
-          parsed = typeof item.summary === 'string' ? JSON.parse(item.summary) : item;
-        } catch {
-          parsed = {
-            summary: item.summary || "No summary available.",
-            matchScore: item.matchScore || 0,
-            skills: item.skills || {},
-            positives: item.positives || [],
-            negatives: item.negatives || [],
-            recommendations: item.recommendations || []
-          };
-        }
-
-        bulkPreviews[item.candidateId] = {
-          ...parsed,
-          jobId: item.jobId,
-          jobTitle: item.jobTitle,
-          candidateId: item.candidateId,
-          clientId: item.clientId,
-          candidateEmail: item.candidateEmail,
-          candidateName: item.candidateEmail?.split("@")[0] || "Candidate"
+    const bulkPreviews = {};
+    res.data.forEach((item, index) => {
+      let parsed;
+      try {
+        parsed = typeof item.summary === 'string' ? JSON.parse(item.summary) : item;
+      } catch {
+        parsed = {
+          summary: item.summary || "No summary available.",
+          matchScore: item.matchScore || 0,
+          skills: item.skills || {},
+          positives: item.positives || [],
+          negatives: item.negatives || [],
+          recommendations: item.recommendations || []
         };
-      });
-
-      setPreviews(prev => ({ ...prev, ...bulkPreviews }));
-      setTopNResults(res.data);
-
-      const firstCandidateId = res.data[0]?.candidateId;
-      if (firstCandidateId) {
-        setPreviewModal({
-          visible: true,
-          data: bulkPreviews[firstCandidateId],
-          allIds: res.data.map(item => item.candidateId),
-          currentIndex: 0
-        });
       }
 
-      message.success("✅ Bulk analysis completed.");
-    } catch (err) {
-      console.error("❌ Bulk analysis error:", err);
-      message.error("Bulk analysis failed.");
+      bulkPreviews[item.candidateId] = {
+        ...parsed,
+        jobId: item.jobId,
+        jobTitle: item.jobTitle,
+        candidateId: item.candidateId,
+        clientId: item.clientId,
+        candidateEmail: item.candidateEmail,
+        candidateName: item.candidateEmail?.split("@")[0] || "Candidate"
+      };
+    });
+
+    setPreviews(prev => ({
+      ...prev,
+      ...bulkPreviews
+    }));
+
+
+    setTopNResults(res.data);
+
+    // ✅ Open first candidate in modal
+    const firstCandidateId = res.data[0]?.candidateId;
+    if (firstCandidateId) {
+      setPreviewModal({
+        visible: true,
+        data: bulkPreviews[firstCandidateId],
+        allIds: res.data.map(item => item.candidateId),
+        currentIndex: 0
+      });
     }
-  };
+
+    message.success("✅ Bulk analysis completed.");
+  } catch (err) {
+    console.error("❌ Bulk analysis error:", err);
+    message.error("Bulk analysis failed.");
+  }
+};
+
+
+
+
 
   useEffect(() => {
     fetchClients();
@@ -245,13 +245,13 @@ export default function ManageCandidates() {
       title: "CV",
       render: (_, item) => (
         <a
-          href={`https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/${item.cv.replace(/\\/g, "/")}`}
+          href={`https://interviewmate-api.azurewebsites.net/${item.cv.replace(/\\/g, "/")}`}
           target="_blank"
           rel="noreferrer"
         >
           View CV
         </a>
-      )
+      ),
     },
     {
       title: "Client",
@@ -296,8 +296,6 @@ export default function ManageCandidates() {
       )
     }
   ];
-
-  const previewValues = Object.values(previews).filter(f => f && f.candidateId);
 
   return (
     <>
@@ -357,8 +355,9 @@ export default function ManageCandidates() {
         columns={columns}
         pagination={{ pageSize: 5 }}
       />
-
-      {previewValues.length > 0 ? (
+      {(() => {
+      const previewValues = Object.values(previews).filter(f => f && f.candidateId);
+      return previewValues.length > 0 ? (
         <div style={{ marginTop: 40 }}>
           <h3>🧠 Bulk AI Feedback Previews</h3>
           {previewValues.map((feedback) => (
@@ -383,23 +382,24 @@ export default function ManageCandidates() {
           ))}
         </div>
       ) : (
-        <Paragraph type="secondary" style={{ marginTop: 40 }}>
-          No feedback previews yet.
-        </Paragraph>
-      )}
+        <Paragraph type="secondary">No feedback previews yet.</Paragraph>
+      );
+    })()}
+
+
 
       <Modal
-        title={`🧾 AI Feedback Preview – ${previewModal.data?.candidateName}`}
-        visible={previewModal.visible}
-        onCancel={() => setPreviewModal({ visible: false, data: null })}
-        onOk={() => {
-          handleSubmitFeedback(previewModal.data.candidateId);
-          setPreviewModal({ visible: false, data: null });
-        }}
-        okText="✅ Confirm & Send"
-        footer={[
-          <Button
-            key="prev"
+      title={`🧾 AI Feedback Preview – ${previewModal.data?.candidateName}`}
+      visible={previewModal.visible}
+      onCancel={() => setPreviewModal({ visible: false, data: null })}
+      onOk={() => {
+        handleSubmitFeedback(previewModal.data.candidateId);
+        setPreviewModal({ visible: false, data: null });
+      }}
+      okText="✅ Confirm & Send"
+      footer={[
+        <Button
+          key="prev"
             onClick={() => {
               const newIndex = (previewModal.currentIndex - 1 + previewModal.allIds.length) % previewModal.allIds.length;
               const newId = previewModal.allIds[newIndex];
@@ -412,9 +412,9 @@ export default function ManageCandidates() {
             disabled={!previewModal.allIds || previewModal.allIds.length < 2}
           >
             ⬅ Previous
-          </Button>,
-          <Button
-            key="next"
+        </Button>,
+        <Button
+          key="next"
             onClick={() => {
               const newIndex = (previewModal.currentIndex + 1) % previewModal.allIds.length;
               const newId = previewModal.allIds[newIndex];
@@ -427,29 +427,30 @@ export default function ManageCandidates() {
             disabled={!previewModal.allIds || previewModal.allIds.length < 2}
           >
             Next ➡
-          </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            onClick={() => {
-              handleSubmitFeedback(previewModal.data.candidateId);
-              setPreviewModal({ visible: false, data: null });
-            }}
-          >
-            ✅ Confirm & Send
-          </Button>,
-        ]}
-        width={800}
-      >
-        {previewModal.data && (
-          <>
-            <Paragraph><strong>Candidate:</strong> {previewModal.data.candidateName}</Paragraph>
-            <Paragraph><strong>Job:</strong> {previewModal.data.jobTitle}</Paragraph>
-            <Paragraph><strong>Score:</strong> {previewModal.data.matchScore}</Paragraph>
-            <FeedbackVisualCard feedback={previewModal.data} />
-          </>
-        )}
-      </Modal>
+        </Button>,
+        <Button
+          key="submit"
+          type="primary"
+          onClick={() => {
+            handleSubmitFeedback(previewModal.data.candidateId);
+            setPreviewModal({ visible: false, data: null });
+          }}
+        >
+          ✅ Confirm & Send
+        </Button>,
+      ]}
+      width={800}
+    >
+      {previewModal.data && (
+        <>
+          <Paragraph><strong>Candidate:</strong> {previewModal.data.candidateName}</Paragraph>
+          <Paragraph><strong>Job:</strong> {previewModal.data.jobTitle}</Paragraph>
+          <Paragraph><strong>Score:</strong> {previewModal.data.matchScore}</Paragraph>
+          <FeedbackVisualCard feedback={previewModal.data} />
+        </>
+      )}
+    </Modal>
+
     </>
   );
 }
