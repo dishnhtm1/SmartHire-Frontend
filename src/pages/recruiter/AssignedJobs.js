@@ -6,6 +6,9 @@ import { PushpinOutlined } from "@ant-design/icons";
 const { Title } = Typography;
 const { Content } = Layout;
 
+const API_BASE = "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net";
+
+
 export default function AssignedJobs() {
   const [jobs, setJobs] = useState([]);
   const token = localStorage.getItem("token");
@@ -13,7 +16,8 @@ export default function AssignedJobs() {
   useEffect(() => {
     const fetchAssignedJobs = async () => {
       try {
-        const res = await axios.get("/api/recruiter/assigned-jobs", {
+        const res = await axios.get(`${API_BASE}/api/recruiter/assigned-jobs`, {
+
           headers: { Authorization: `Bearer ${token}` },
         });
         setJobs(res.data);
