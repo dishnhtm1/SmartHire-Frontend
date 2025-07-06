@@ -193,7 +193,38 @@ export default function ManageCandidates() {
     res.data.forEach((item, index) => {
       let parsed;
       try {
-        parsed = typeof item.summary === 'string' ? JSON.parse(item.summary) : item;
+        // parsed = typeof item.summary === 'string' ? JSON.parse(item.summary) : item;
+        if (typeof item.summary === "string") {
+          try {
+            const parsedJson = JSON.parse(item.summary);
+            parsed = {
+              ...parsedJson,
+              matchScore: item.matchScore,
+              candidateEmail: item.candidateEmail,
+              candidateId: item.candidateId,
+            };
+          } catch (e) {
+            console.warn("⚠️ Invalid JSON summary for:", item.candidateEmail, item.summary);
+            parsed = {
+              summary: item.summary || "No summary available.",
+              matchScore: item.matchScore || 0,
+              skills: item.skills || {},
+              positives: item.positives || [],
+              negatives: item.negatives || [],
+              recommendations: item.recommendations || []
+            };
+          }
+        } else {
+          parsed = {
+            summary: item.summary || "No summary available.",
+            matchScore: item.matchScore || 0,
+            skills: item.skills || {},
+            positives: item.positives || [],
+            negatives: item.negatives || [],
+            recommendations: item.recommendations || []
+          };
+        }
+
       } catch {
         parsed = {
           summary: item.summary || "No summary available.",
