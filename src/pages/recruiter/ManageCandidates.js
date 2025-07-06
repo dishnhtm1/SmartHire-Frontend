@@ -175,14 +175,9 @@ export default function ManageCandidates() {
 };
 
   const handleBulkAnalyze = async () => {
-  // if (!selectedClientForBulk || !selectedJobForBulk) {
-  //   return message.warning("Select both client and job for bulk analysis.");
-  // }
-  if (!Array.isArray(res.data) || res.data.length === 0) {
-  console.warn("⚠️ Invalid or empty bulk response:", res.data);
-  message.warning("⚠️ No analyzed candidates returned.");
-  return;
-}
+  if (!selectedClientForBulk || !selectedJobForBulk) {
+    return message.warning("Select both client and job for bulk analysis.");
+  }
 
   try {
     const res = await axios.post("/api/recruiter/analyze-top-candidates", {
@@ -327,11 +322,7 @@ export default function ManageCandidates() {
     }
   ];
 
-console.log("📋 previewValues:", previewValues);
-console.log("🔍 typeof previewValues:", typeof previewValues);
-console.log("🔍 previewValues.map:", typeof previewValues.map);
-
-console.log("🔍 Previews:", previews);
+  console.log("🔍 Previews:", previews);
 console.log("🔍 Object.values(previews):", Object.values(previews));
 
 const previewValues = Array.isArray(previews)
