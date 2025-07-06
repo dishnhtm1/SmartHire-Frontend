@@ -42,10 +42,19 @@ export default function ManageCandidates() {
   };
 
   const fetchUploads = async () => {
+  try {
     const res = await axios.get("/api/recruiter/uploads", {
       headers: { Authorization: `Bearer ${token}` },
     });
+
+    // ✅ Ensure the API returned an array
+    if (!Array.isArray(res.data)) {
+      console.error("❌ uploads API returned invalid format", res.data);
+      return;
+    }
+
     setUploads(res.data);
+
     const preselected = {};
     res.data.forEach((item) => {
       if (item.clientId) {
@@ -53,7 +62,11 @@ export default function ManageCandidates() {
       }
     });
     setSelectedClients(preselected);
-  };
+  } catch (error) {
+    console.error("❌ Error fetching uploads:", error);
+    message.error("Failed to load candidate uploads.");
+  }
+};
 
   const fetchJobsForClient = async (clientId) => {
     const res = await axios.get(`/api/recruiter/client-jobs/${clientId}`, {
@@ -190,10 +203,15 @@ export default function ManageCandidates() {
       };
     });
 
-    setPreviews(prev => ({
-      ...prev,
-      ...bulkPreviews
-    }));
+    // setPreviews(prev => ({
+    //   ...prev,
+    //   ...bulkPreviews
+    // }));
+    setPreviews(prev => {
+      const updated = { ...prev, ...bulkPreviews };
+      console.log("🔍 Previews after bulk analyze:", updated);
+      return updated;
+    });
 
 
     setTopNResults(res.data);
@@ -220,10 +238,16 @@ export default function ManageCandidates() {
 
 
 
+  // useEffect(() => {
+  //   fetchClients();
+  //   fetchUploads();
+  // }, []);
   useEffect(() => {
-    fetchClients();
-    fetchUploads();
+  console.log("👀 Token:", token); // ✅ Bonus: Log token on mount
+  fetchClients();
+  fetchUploads();
   }, []);
+
 
   useEffect(() => {
     uploads.forEach((item) => {
@@ -356,7 +380,10 @@ export default function ManageCandidates() {
         pagination={{ pageSize: 5 }}
       />
       {(() => {
-      const previewValues = Object.values(previews).filter(f => f && f.candidateId);
+      // const previewValues = Object.values(previews).filter(f => f && f.candidateId);
+      const previewValues = typeof previews === "object"
+      ? Object.values(previews || {}).filter(f => f && f.candidateId)
+      : [];
       return previewValues.length > 0 ? (
         <div style={{ marginTop: 40 }}>
           <h3>🧠 Bulk AI Feedback Previews</h3>
