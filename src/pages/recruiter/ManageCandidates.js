@@ -35,14 +35,31 @@ export default function ManageCandidates() {
   const token = localStorage.getItem("token");
 
   const fetchClients = async () => {
+  try {
     const res = await axios.get(
-      "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/users?role=client",
+      "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/recruiter/uploads",
       {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    setClients(res.data);
-  };
+
+    const uploads = res.data;
+
+    // 🔁 Extract unique clients from uploads
+    const uniqueClients = {};
+    uploads.forEach((item) => {
+      const client = item.clientId;
+      if (client && client._id && !uniqueClients[client._id]) {
+        uniqueClients[client._id] = client;
+      }
+    });
+
+    setClients(Object.values(uniqueClients));
+  } catch (error) {
+    console.error("❌ Error fetching clients from uploads:", error);
+    message.error("Failed to fetch clients.");
+  }
+};
 
 
   const fetchUploads = async () => {
