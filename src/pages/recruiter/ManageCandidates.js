@@ -325,9 +325,18 @@ export default function ManageCandidates() {
   console.log("🔍 Previews:", previews);
 console.log("🔍 Object.values(previews):", Object.values(previews));
 
-const previewValues = Array.isArray(previews)
-  ? previews // very unlikely
-  : Object.values(previews || {}).filter(f => f && f.candidateId);
+let previewValues = [];
+
+if (
+  previews &&
+  typeof previews === "object" &&
+  !Array.isArray(previews)
+) {
+  const values = Object.values(previews);
+  if (Array.isArray(values)) {
+    previewValues = values.filter((f) => f && f.candidateId);
+  }
+}
   return (
     <>
       <h2>📄 Manage Candidates</h2>
