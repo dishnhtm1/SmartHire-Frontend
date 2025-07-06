@@ -245,13 +245,13 @@ export default function ManageCandidates() {
       title: "CV",
       render: (_, item) => (
         <a
-          href={`http://localhost:5000/${item.cv.replace(/\\/g, "/")}`}
+          href={`https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/${item.cv.replace(/\\/g, "/")}`}
           target="_blank"
           rel="noreferrer"
         >
           View CV
         </a>
-      ),
+      )
     },
     {
       title: "Client",
@@ -388,29 +388,18 @@ export default function ManageCandidates() {
         </Paragraph>
       )}
 
-
-
-
-
-
-
-
-
-
-
-
       <Modal
-      title={`🧾 AI Feedback Preview – ${previewModal.data?.candidateName}`}
-      visible={previewModal.visible}
-      onCancel={() => setPreviewModal({ visible: false, data: null })}
-      onOk={() => {
-        handleSubmitFeedback(previewModal.data.candidateId);
-        setPreviewModal({ visible: false, data: null });
-      }}
-      okText="✅ Confirm & Send"
-      footer={[
-        <Button
-          key="prev"
+        title={`🧾 AI Feedback Preview – ${previewModal.data?.candidateName}`}
+        visible={previewModal.visible}
+        onCancel={() => setPreviewModal({ visible: false, data: null })}
+        onOk={() => {
+          handleSubmitFeedback(previewModal.data.candidateId);
+          setPreviewModal({ visible: false, data: null });
+        }}
+        okText="✅ Confirm & Send"
+        footer={[
+          <Button
+            key="prev"
             onClick={() => {
               const newIndex = (previewModal.currentIndex - 1 + previewModal.allIds.length) % previewModal.allIds.length;
               const newId = previewModal.allIds[newIndex];
@@ -423,9 +412,9 @@ export default function ManageCandidates() {
             disabled={!previewModal.allIds || previewModal.allIds.length < 2}
           >
             ⬅ Previous
-        </Button>,
-        <Button
-          key="next"
+          </Button>,
+          <Button
+            key="next"
             onClick={() => {
               const newIndex = (previewModal.currentIndex + 1) % previewModal.allIds.length;
               const newId = previewModal.allIds[newIndex];
@@ -438,30 +427,29 @@ export default function ManageCandidates() {
             disabled={!previewModal.allIds || previewModal.allIds.length < 2}
           >
             Next ➡
-        </Button>,
-        <Button
-          key="submit"
-          type="primary"
-          onClick={() => {
-            handleSubmitFeedback(previewModal.data.candidateId);
-            setPreviewModal({ visible: false, data: null });
-          }}
-        >
-          ✅ Confirm & Send
-        </Button>,
-      ]}
-      width={800}
-    >
-      {previewModal.data && (
-        <>
-          <Paragraph><strong>Candidate:</strong> {previewModal.data.candidateName}</Paragraph>
-          <Paragraph><strong>Job:</strong> {previewModal.data.jobTitle}</Paragraph>
-          <Paragraph><strong>Score:</strong> {previewModal.data.matchScore}</Paragraph>
-          <FeedbackVisualCard feedback={previewModal.data} />
-        </>
-      )}
-    </Modal>
-
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            onClick={() => {
+              handleSubmitFeedback(previewModal.data.candidateId);
+              setPreviewModal({ visible: false, data: null });
+            }}
+          >
+            ✅ Confirm & Send
+          </Button>,
+        ]}
+        width={800}
+      >
+        {previewModal.data && (
+          <>
+            <Paragraph><strong>Candidate:</strong> {previewModal.data.candidateName}</Paragraph>
+            <Paragraph><strong>Job:</strong> {previewModal.data.jobTitle}</Paragraph>
+            <Paragraph><strong>Score:</strong> {previewModal.data.matchScore}</Paragraph>
+            <FeedbackVisualCard feedback={previewModal.data} />
+          </>
+        )}
+      </Modal>
     </>
   );
 }
