@@ -78,12 +78,23 @@ export default function CandidateUpload() {
     });
 
     try {
-      await axios.post('/api/candidate/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      // await axios.post('/api/candidate/upload', formData, {
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data',
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // });
+      await axios.post(
+        'https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/candidate/upload',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );  
+
 
       message.success('✅ CV uploaded successfully!');
       setCv(null);
