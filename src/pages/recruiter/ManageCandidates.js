@@ -386,7 +386,7 @@ const previewValues = Array.isArray(previews)
         columns={columns}
         pagination={{ pageSize: 5 }}
       />
-      {previewValues.length > 0 ? (
+      {Array.isArray(previewValues) && previewValues.length > 0 ? (
   <div style={{ marginTop: 40 }}>
     <h3>🧠 Bulk AI Feedback Previews</h3>
     {previewValues.map((feedback) => (
@@ -415,6 +415,7 @@ const previewValues = Array.isArray(previews)
     No feedback previews yet.
   </Paragraph>
 )}
+
 
 
 
