@@ -82,9 +82,12 @@ export default function ManageCandidates() {
 };
 
   const fetchJobsForClient = async (clientId) => {
-    const res = await axios.get(`/api/recruiter/client-jobs/${clientId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await axios.get(
+      `https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/recruiter/client-jobs/${clientId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
     setJobsByClient((prev) => ({ ...prev, [clientId]: res.data }));
   };
 
@@ -94,14 +97,19 @@ export default function ManageCandidates() {
     if (!clientId || !jobId) return message.warning("Select client and job.");
 
     const job = jobsByClient[clientId]?.find((j) => j._id === jobId);
-    const res = await axios.post("/api/recruiter/analyze-summary", {
-      cvPath: item.cv,
-      linkedinText: item.linkedin,
-      jobTitle: job.title,
-      jobId: job._id,
-      candidateEmail: item.user?.email,
-      jobDescription: job.description,
-    }, { headers: { Authorization: `Bearer ${token}` } });
+    const res = await axios.post(
+      "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/recruiter/analyze-summary",
+      {
+        cvPath: item.cv,
+        linkedinText: item.linkedin,
+        jobTitle: job.title,
+        jobId: job._id,
+        candidateEmail: item.user?.email,
+        jobDescription: job.description,
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
 
     const ai = res.data;
     const data = {
@@ -127,9 +135,13 @@ export default function ManageCandidates() {
     const data = previews[candidateId];
     if (!data) return;
 
-    await axios.post("/api/recruiter/save-feedback", data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await axios.post(
+      "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/recruiter/save-feedback",
+      data,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
 
     message.success("✅ Feedback submitted.");
     setPreviews((prev) => {
@@ -160,9 +172,13 @@ export default function ManageCandidates() {
       jobTitle: item.jobTitle,
     }));
 
-    await axios.post("/api/recruiter/save-bulk-feedback", { feedbacks }, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await axios.post(
+      "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/recruiter/save-bulk-feedback",
+      { feedbacks },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
 
     message.success("✅ All feedbacks submitted.");
     setTopNResults([]);   // clear analyzed feedbacks
@@ -181,13 +197,17 @@ export default function ManageCandidates() {
   }
 
   try {
-    const res = await axios.post("/api/recruiter/analyze-top-candidates", {
-      clientId: selectedClientForBulk,
-      jobId: selectedJobForBulk,
-      topN: customTopN,
-    }, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await axios.post(
+      "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/recruiter/analyze-top-candidates",
+      {
+        clientId: selectedClientForBulk,
+        jobId: selectedJobForBulk,
+        topN: customTopN,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
 
     const bulkPreviews = {};
     res.data.forEach((item, index) => {
