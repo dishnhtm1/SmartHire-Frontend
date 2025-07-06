@@ -35,17 +35,30 @@ export default function ManageCandidates() {
   const token = localStorage.getItem("token");
 
   const fetchClients = async () => {
-    const res = await axios.get("/api/admin/clients", {
+    // const res = await axios.get("/api/admin/clients", {
+    //   headers: { Authorization: `Bearer ${token}` },
+    // });
+   const res = await axios.get(
+    "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/recruiter/uploads",
+    {
       headers: { Authorization: `Bearer ${token}` },
-    });
+    }
+  ); 
     setClients(res.data);
   };
 
   const fetchUploads = async () => {
   try {
-    const res = await axios.get("/api/recruiter/uploads", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    // const res = await axios.get("/api/recruiter/uploads", {
+    //   headers: { Authorization: `Bearer ${token}` },
+    // });
+    const res = await axios.get(
+      "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/recruiter/uploads",
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
 
     // ✅ Ensure the API returned an array
     if (!Array.isArray(res.data)) {
