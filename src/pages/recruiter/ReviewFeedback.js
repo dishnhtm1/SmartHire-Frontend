@@ -18,6 +18,7 @@ import {
 
 
 const { Title, Paragraph } = Typography;
+const API_BASE = "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net";
 
 export default function ReviewFeedback() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -25,9 +26,10 @@ export default function ReviewFeedback() {
 
   const fetchFeedbacks = async () => {
     try {
-      const res = await axios.get("/api/recruiter/review-feedback", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(`${API_BASE}/api/recruiter/review-feedback`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
       setFeedbacks(res.data);
     } catch (error) {
       console.error("❌ Failed to fetch review feedback:", error);
@@ -36,9 +38,9 @@ export default function ReviewFeedback() {
 
   const handleSendToCandidate = async (id) => {
     try {
-      await axios.post(`/api/recruiter/send-to-candidate/${id}`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.post(`${API_BASE}/api/recruiter/send-to-candidate/${id}`, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
       message.success("✅ Feedback sent to candidate.");
       fetchFeedbacks();
     } catch (err) {
@@ -49,9 +51,10 @@ export default function ReviewFeedback() {
 
   const handleSendFinalFeedback = async (id) => {
     try {
-      await axios.post(`/api/recruiter/send-final-feedback/${id}`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.post(`${API_BASE}/api/recruiter/send-final-feedback/${id}`, {}, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
       message.success("✅ Final feedback sent.");
       fetchFeedbacks();
     } catch (err) {
