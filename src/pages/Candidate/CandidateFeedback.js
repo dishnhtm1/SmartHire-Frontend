@@ -11,10 +11,12 @@ export default function CandidateFeedback() {
     const fetchFeedback = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("/api/candidate/feedback", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const res = await axios.get(
+          "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/candidate/feedback",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
         });
 
         const visibleFeedbacks = res.data.filter(
