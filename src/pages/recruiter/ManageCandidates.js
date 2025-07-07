@@ -325,12 +325,20 @@ export default function ManageCandidates() {
             setSelectedClients((prev) => ({ ...prev, [item._id]: val }));
             fetchJobsForClient(val);
           }}
-          style={{ width: 150 }}
+          style={{ width: 300 }}
           placeholder="Select Client"
         >
-          {clients.map((c) => (
-            <Option key={c._id} value={c._id}>{c.email}</Option>
-          ))}
+          {clients.map((c) => {
+            const referredCandidates = uploads
+              .filter((u) => u.clientId?._id === c._id)
+              .map((u) => u.user?.email?.split("@")[0] || "Unnamed");
+
+            return (
+              <Option key={c._id} value={c._id}>
+                {c.email} ({referredCandidates.join(", ") || "No candidates"})
+              </Option>
+            );
+          })}
         </Select>
       ),
     },
