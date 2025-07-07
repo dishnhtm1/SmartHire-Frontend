@@ -105,7 +105,8 @@ export default function ClientFeedback() {
 
     try {
       await axios.post(
-        `/api/client/respond-feedback`,
+       `https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/client/respond-feedback`,
+
         {
           feedbackId: id,
           status,
@@ -132,9 +133,15 @@ export default function ClientFeedback() {
     if (!decision) return message.warning("Please select a final decision");
 
     try {
+      // await axios.patch(
+      //   `/api/client/final-decision/${id}`,
+      //   { status: decision, message: finalMessage },
       await axios.patch(
-        `/api/client/final-decision/${id}`,
-        { status: decision, message: finalMessage },
+      `https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/client/final-decision/${id}`,
+      {
+        status: decision,
+        message: finalMessage,
+      },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       message.success("✅ Final decision submitted.");
