@@ -35,14 +35,15 @@ export default function ManageCandidates() {
   const token = localStorage.getItem("token");
 
   const fetchClients = async () => {
-    const res = await axios.get(
-      "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/users?role=client",
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    setClients(res.data);
-  };
+  const res = await axios.get(
+    "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/users?role=client", // ✅ FIXED: no `:1`
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  setClients(res.data);
+};
+
 
 
   const fetchUploads = async () => {
