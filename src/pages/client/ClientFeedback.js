@@ -45,9 +45,13 @@ export default function ClientFeedback() {
       //   };
       // });
       // setResponseInputs(initialInputs);
-      const res = await axios.get("/api/client/feedback", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        "https://smarthire-backend-c7cvfhfyd5caeph3.japanwest-01.azurewebsites.net/api/client/feedback",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
 
       // ✅ Defensive check
       if (!Array.isArray(res.data)) {
